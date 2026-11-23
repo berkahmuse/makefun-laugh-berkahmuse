@@ -13,9 +13,21 @@ LINE = (
 )
 
 
+def is_single_sentence(text: str) -> bool:
+    """One sentence: no newline, ends with terminal punctuation, and no
+    sentence-ending punctuation followed by more words inside the line."""
+    if "\n" in text or text != text.strip():
+        return False
+    if text[-1] not in ".!?":
+        return False
+    body = text[:-1]
+    return not any(p in body for p in ".!?")
+
+
 def main() -> None:
     assert 1 <= len(LINE) <= 200, f"line is {len(LINE)} chars"
     assert LINE.strip(), "line must not be only whitespace"
+    assert is_single_sentence(LINE), "entry must be a single sentence"
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8") as f:
         f.write(LINE)
